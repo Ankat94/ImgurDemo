@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#141518</color>
+    <color name="colorPrimaryDark">#2c2f34</color>
+    <color name="colorAccent">#5c69ff</color>
+    <color name="blurBackground">#78141518</color>
+</resources>
