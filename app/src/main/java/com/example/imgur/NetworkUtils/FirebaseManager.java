@@ -1,7 +1,9 @@
 package com.example.imgur.NetworkUtils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,10 +22,12 @@ public class FirebaseManager {
         this.context = context;
     }
 
-    public void createUser(String email, String pass, final TaskListener taskListener) {
+    public void createUser(String email, String pass, Activity activity, final TaskListener taskListener) {
         firebaseAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                FrameLayout rootLayout = activity.findViewById(android.R.id.content);
+                rootLayout.removeViewAt(rootLayout.getChildCount()-1);
                 if (task.isSuccessful()) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     taskListener.onComplete(user);
@@ -35,10 +39,12 @@ public class FirebaseManager {
         });
     }
 
-    public void signInUser(String email, String pass, final TaskListener taskListener) {
+    public void signInUser(String email, String pass, Activity activity, final TaskListener taskListener) {
         firebaseAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                FrameLayout rootLayout = activity.findViewById(android.R.id.content);
+                rootLayout.removeViewAt(rootLayout.getChildCount()-1);
                 if (task.isSuccessful()) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     taskListener.onComplete(user);

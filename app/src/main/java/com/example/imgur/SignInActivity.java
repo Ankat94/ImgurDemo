@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +29,6 @@ public class SignInActivity extends AppCompatActivity {
     TextView signUpText;
     Button signInButton;
     boolean signUp = false;
-    View backgroundView;
 
     String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -42,8 +43,12 @@ public class SignInActivity extends AppCompatActivity {
         signUpText = findViewById(R.id.sign_in_sign_up);
         signInButton = findViewById(R.id.sign_in_button);
 
-        backgroundView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.loading_view,null);
-
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signInClicked();
+            }
+        });
 
         signUpText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +60,7 @@ public class SignInActivity extends AppCompatActivity {
         checkPermission();
     }
 
-    public void signInClicked(View view) {
+    public void signInClicked() {
         String email = emailText.getText().toString();
         String  pass = passText.getText().toString();
 
@@ -73,10 +78,13 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
+        FrameLayout rootlayout = findViewById(android.R.id.content);
+        View.inflate(this,R.layout.loading_view,rootlayout);
+
         String text = signInButton.getText().toString();
 
         if (text.equalsIgnoreCase("Sign In")) {
-            firebaseManager.signInUser(email, pass, new TaskListener() {
+            firebaseManager.signInUser(email, pass, this, new TaskListener() {
                 @Override
                 public void onComplete(FirebaseUser user) {
                     Intent mainIntent = new Intent(SignInActivity.this, MainActivity.class);
@@ -85,7 +93,7 @@ public class SignInActivity extends AppCompatActivity {
             });
         }
         else {
-            firebaseManager.createUser(email, pass, new TaskListener() {
+            firebaseManager.createUser(email, pass, this, new TaskListener() {
                 @Override
                 public void onComplete(FirebaseUser user) {
                     signUp = true;
@@ -132,6 +140,5 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 }
